@@ -46,10 +46,14 @@ module "cognito" {
 module "storage" {
   source = "../../modules/storage"
 
-  app_name             = var.app_name
-  environment          = var.environment
-  enable_versioning    = false
-  cors_allowed_origins = ["http://localhost:3000"]
+  app_name          = var.app_name
+  environment       = var.environment
+  enable_versioning = false
+  cors_allowed_origins = [
+    "http://localhost:3000",
+    "https://*.electa.app",
+    "https://*.electa.com"
+  ]
 }
 
 
