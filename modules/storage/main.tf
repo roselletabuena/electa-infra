@@ -50,3 +50,43 @@ resource "aws_s3_bucket_cors_configuration" "media" {
     max_age_seconds = 3000
   }
 }
+
+resource "aws_iam_user" "s3_service_user" {
+  name = "${var.app_name}-s3-service-user"
+
+  tags = {
+    Name        = "${var.app_name}-s3-service-user"
+    Environment = var.environment
+    ManagedBy   = "Terraform"
+  }
+}
+
+resource "aws_iam_policy" "s3_media_policy" {
+  name        = "ElectaS3MediaPolicy"
+  description = "Least-privilege policy for Electa S3 media assets upload and management"
+
+  policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Sid    = "ElectaMediaBucketAccess"
+        Effect = "Allow"
+        Action = [
+          "s3:PutObject",
+          "s3:GetObject",
+          "s3:DeleteObject"
+        ]
+        Resource = "${aws_s3_bucket.media.arn}/*"
+      }
+    ]
+  })
+}
+
+resource "aws_iam_user_policy_attachment" "s3_media_attach" {
+  user       = aws_iam_user.s3_service_user.name
+  policy_arn = aws_iam_policy.s3_media_policy.arn
+}
+
+resource "aws_iam_access_key" "s3_service_key" {
+  user = aws_iam_user.s3_service_user.name
+}
