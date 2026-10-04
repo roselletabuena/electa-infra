@@ -25,7 +25,7 @@ output "s3_media_bucket" {
 
 output "env_snippet" {
   description = "Snippet for production deployment environment variables"
-  value = <<-EOT
+  value       = <<-EOT
     NEXT_PUBLIC_COGNITO_USER_POOL_ID=${module.cognito.user_pool_id}
     NEXT_PUBLIC_COGNITO_CLIENT_ID=${module.cognito.user_pool_client_id}
     NEXT_PUBLIC_COGNITO_DOMAIN=https://${module.cognito.domain}.auth.${var.aws_region}.amazoncognito.com
